@@ -2,10 +2,15 @@
 <html>
 <head>
 <meta name="mobile-web-app-capable" content='yes'/>
-<!-- <link rel="icon" sizes="196x196" href="icon-196.png">
-<link rel="icon" sizes="128x128" href="icon-128.png">-->
+<link rel="icon" sizes="196x196" href="js/images/icon-196.png">
+<link rel="icon" sizes="128x128" href="js/images/icon-128.png">
+
 <meta name='apple-mobile-web-app-capable' content='yes' />
 <meta name='apple-mobile-web-app-status-bar-style' content='black' />
+<link rel="apple-touch-icon" sizes="76x76" href="js/images/icon-76.png">
+<link rel="apple-touch-icon" sizes="120x120" href="js/images/icon-120.png">
+<link rel="apple-touch-icon" sizes="152x152" href="js/images/icon-152.png">
+
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
 
 <link rel='stylesheet' href='css/jqm/jquery.mobile-1.4.3.min.css'/>
@@ -33,8 +38,6 @@
 	    	</ul>
         	<ul data-role="listview" id='history' class='inset'>
             	<li id='li_history'>History</li>
-            	<!--<li><a href="#"><i class='lIcon fa fa-coffee'></i>Need a Coffee</a></li>
-            	<li data-icon='false'><a href="#"><i class='lIcon fa fa-beer'></i>Have a Beer</a></li>-->
         	</ul>
         	<ul data-role="listview" id='aboutbutton' class='inset'>
 	        	<li data-icon='info'><a href="#about" id='a_about' data-rel="popup" data-position-to="window" data-transition="pop">About</a></li>
@@ -43,7 +46,7 @@
         </div>
         
         <div data-role='popup' id='about'>
-        	<img src='icon-196.png'>
+        	<img src='js/images/icon-196.png'>
         	<h1>DBpedia Places Berlin</h1>
 		   	<ul data-role="listview">
 		   		<li data-icon='false'><h2 id='h_dev'>Developer</h2><h3>Christoph Lauer</h3></li>
