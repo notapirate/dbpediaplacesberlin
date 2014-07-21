@@ -5,20 +5,11 @@
     bottom: 0;
     left: 0;
     padding: 0;
-    /*padding-top: 50px;
-    padding-bottom: 50px;*/
 }
 
 .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #000 }
 
-/*#a_contentpage {
-	top: 40px;
-	bottom: 40px;
-}*/
-
 #map {
-	/*padding-top: 0;
-    padding-bottom: 0;*/
     height: 100%;
 }
 

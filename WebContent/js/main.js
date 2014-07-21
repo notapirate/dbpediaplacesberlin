@@ -26,7 +26,6 @@ $(document).ready(
 		narrowscreen  = window.matchMedia( "(max-width: 480px)" );
 		agent = navigator.userAgent;
 		if(agent.match(/Android/i)) {
-			console.log('Android style');
 			// Load nativedroid/
 			$('head').append(
 					"<!-- FontAwesome - http://fortawesome.github.io/Font-Awesome/ -->"+
@@ -66,9 +65,9 @@ $(document).ready(
 			else {
 				document.getElementById("menubutton").setAttribute("class", "ui-btn ui-btn-inline ui-icon-bars ui-btn-icon-notext ui-btn-left ui-corner-all");
 				document.getElementById("pos").setAttribute("class", "ui-btn ui-btn-inline ui-icon-location ui-btn-icon-notext ui-btn-right ui-corner-all");
-				document.getElementById("nm-back").setAttribute("class", "ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-b ui-icon-back ui-btn-icon-notext");
+				document.getElementById("nm-back").setAttribute("class", "ui-btn ui-btn-inline ui-shadow ui-corner-all ui-icon-back ui-btn-icon-notext");
 				document.getElementById("nm-back").innerHTML = "";
-				document.getElementById("nm-link").setAttribute("class", "ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-b ui-icon-info ui-btn-icon-notext ui-btn-right");
+				document.getElementById("nm-link").setAttribute("class", "ui-btn ui-btn-inline ui-shadow ui-corner-all ui-icon-info ui-btn-icon-notext ui-btn-right");
 				document.getElementById("nm-link").innerHTML = "";
 			}
 			// Make the non-Android-page default
@@ -272,7 +271,7 @@ function showContentfromHistory(name, image, content, href) {
 		document.getElementById("w-image").src = image;
 		document.getElementById("w-content").innerHTML = content;
 		document.getElementById("w-link").href = href;
-		$( "#contentpanel" ).trigger( "pagecreate" );
+		$( "#contentpanel" ).trigger( "updatelayout" );
 		$( "#contentpanel" ).panel( "open" );
 	}
 	else {
