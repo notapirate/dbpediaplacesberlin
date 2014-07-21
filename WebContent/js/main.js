@@ -25,7 +25,7 @@ $(document).ready(
 		widescreen = window.matchMedia( "(min-width: 880px)" );
 		narrowscreen  = window.matchMedia( "(max-width: 480px)" );
 		agent = navigator.userAgent;
-		if(!agent.match(/Android/i)) {
+		if(agent.match(/Android/i)) {
 			console.log('Android style');
 			// Load nativedroid/
 			$('head').append(
@@ -83,7 +83,7 @@ $(document).ready(
 
 	// create the tile layer with correct attribution
 	var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-	var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+	var osmAttrib='Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 	var osm = new L.TileLayer(osmUrl, {
 		attribution: osmAttrib
 	});
