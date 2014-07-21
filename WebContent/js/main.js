@@ -25,7 +25,8 @@ $(document).ready(
 		widescreen = window.matchMedia( "(min-width: 880px)" );
 		narrowscreen  = window.matchMedia( "(max-width: 480px)" );
 		agent = navigator.userAgent;
-		if(agent.match(/Android/i)) {
+		if(!agent.match(/Android/i)) {
+			console.log('Android style');
 			// Load nativedroid/
 			$('head').append(
 					"<!-- FontAwesome - http://fortawesome.github.io/Font-Awesome/ -->"+
@@ -162,7 +163,7 @@ function getData(feature, layer) {
 			select = "SELECT * ",
 			where = "WHERE{?res dbpedia-owl:wikiPageID " + id + " ; rdfs:label ?name ; dbpedia-owl:abstract ?content ; owl:sameAs ?redirect OPTIONAL {?res dbpedia-owl:thumbnail ?image BIND(?image as ?image)} ",
 			filter = "FILTER(lang(?name) = \"" + lan + "\" || lang(?name) = \"en\") FILTER(lang(?content) = \"en\" || lang(?content) = \"" + lan + "\")";
-    	console.log(select + where + filter + "}");
+    	//console.log(select + where + filter + "}");
 		var queryUrl = encodeURIComponent(select + where + filter + "}");
 		var fullUrl = "http://dbpedia.org/sparql?query=" + queryUrl + "&format=application%2Fjson";
 		$.ajax({
