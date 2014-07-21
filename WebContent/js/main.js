@@ -58,7 +58,7 @@ $(document).ready(
 			document.getElementById("am-link").id = 'm-link';
 		}
 		else {
-			if(!agent.match(/(iPhone)|(iPad)|(iPod)/i)) {
+			if(agent.match(/(iPhone)|(iPad)|(iPod)/i)) {
 				$("#mappage, #n_contentpage").removeClass('ui-page-theme-b').addClass('ui-page-theme-a');
 				$("#title").removeClass('ui-bar-b').addClass('ui-bar-a');
 			}
