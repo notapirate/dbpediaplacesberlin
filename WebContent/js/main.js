@@ -41,6 +41,9 @@ $(document).ready(
 						"<link rel='stylesheet' href='css/nativedroid/jquerymobile.nativedroid.color.blue.css' id='jQMnDColor' />"+
 						"<script src='js/nativedroid.script.js'></script>"
 			);
+			// Make Leaflet tooltip background color black
+			$(".leaflet-popup-content-wrapper, .leaflet-popup-tip").backgroundColor = '#000';
+			
 			// Prepare header elements for use with nativedroid
 			var menu_android = document.createElement("i");
 			menu_android.setAttribute("class", "lIcon fa fa-bars");
@@ -55,6 +58,13 @@ $(document).ready(
 			document.getElementById("am-link").id = 'm-link';
 		}
 		else {
+			if(!agent.match(/(iPhone)|(iPad)|(iPod)/i)) {
+				$("#mappage, #n_contentpage").removeClass('ui-page-theme-b').addClass('ui-page-theme-a');
+				$("#title").removeClass('ui-bar-b').addClass('ui-bar-a');
+			}
+			else {
+				$(".leaflet-popup-content-wrapper, .leaflet-popup-tip").backgroundColor = '#000';
+			}
 			// Add or remove button texts
 			if(widescreen.matches) {
 				document.getElementById("menubutton").innerHTML = "Menu";
