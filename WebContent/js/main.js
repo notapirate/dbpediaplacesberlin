@@ -7,18 +7,20 @@ var posmarker;
 
 $(document).ready(
 	function() {
-		var yourpos = "Your position";
+		var yourpos = "Your position",
+			menutext = "Menu";
 		lan = window.navigator.language.substring(0,2);
 		switch(lan) {
 			case "de": {
+				yourpos = "Ihre Position";
+				menutext = "Men&uuml;";
 				document.getElementById("li_history").innerHTML = "Chronik";
 				document.getElementById("a_about").innerHTML = "Impressum";
 				document.getElementById("h_dev").innerHTML = "Entwickler";
 				document.getElementById("h_data").innerHTML = "Daten";
 				document.getElementById("w-back").innerHTML = "Schliessen";
-				document.getElementById("nm-back").innerHTML = "Schliessen";
-				document.getElementById("am-back").innerHTML = "Schliessen";
-				yourpos = "Ihre Position";
+				document.getElementById("nm-back").innerHTML = "Zur&uuml;ck";
+				document.getElementById("am-back").innerHTML = "<i class='lIcon fa fa-undo'></i>Zur&uuml;ck";
 				break;
 			}
 		}
@@ -42,13 +44,18 @@ $(document).ready(
 						"<script src='js/nativedroid.script.js'></script>"
 			);
 			// Make Leaflet tooltip background color black
-			$(".leaflet-popup-content-wrapper, .leaflet-popup-tip").backgroundColor = '#000';
+			//$(".leaflet-popup-content-wrapper, .leaflet-popup-tip").backgroundColor = '#000';
 			
 			// Prepare header elements for use with nativedroid
 			var menu_android = document.createElement("i");
 			menu_android.setAttribute("class", "lIcon fa fa-bars");
 			document.getElementById("menubutton").appendChild(menu_android);
-			if(!widescreen.matches) document.getElementById('title').removeChild(document.getElementById('pos'));
+			if(widescreen.matches) {
+				var pos_android = document.createElement("i");
+				pos_android.setAttribute("class", "lIcon fa fa-map-marker");
+				document.getElementById("pos").appendChild(pos_android);
+			}
+			else document.getElementById('title').removeChild(document.getElementById('pos'));
 			
 			// Make the Android-page default
 			document.getElementById("a_contentpage").id = 'contentpage';
@@ -58,16 +65,12 @@ $(document).ready(
 			document.getElementById("am-link").id = 'm-link';
 		}
 		else {
-			if(agent.match(/(iPhone)|(iPad)|(iPod)/i)) {
-				$("#mappage, #n_contentpage").removeClass('ui-page-theme-b').addClass('ui-page-theme-a');
-				$("#title").removeClass('ui-bar-b').addClass('ui-bar-a');
-			}
-			else {
-				$(".leaflet-popup-content-wrapper, .leaflet-popup-tip").backgroundColor = '#000';
-			}
+			/*else {
+				//$(".leaflet-popup-content-wrapper, .leaflet-popup-tip").css({"background-color": "#000"});
+			}*/
 			// Add or remove button texts
-			if(widescreen.matches) {
-				document.getElementById("menubutton").innerHTML = "Menu";
+			if(widescreen.matches || agent.match(/(iPhone)|(iPad)|(iPod)/i)) {
+				document.getElementById("menubutton").innerHTML = menutext;
 				document.getElementById("menubutton").setAttribute("class", "ui-btn ui-btn-inline ui-icon-bars ui-btn-icon-left ui-btn-left ui-corner-all");
 				document.getElementById("pos").innerHTML = "Position";
 				document.getElementById("pos").setAttribute("class", "ui-btn ui-btn-inline ui-icon-location ui-btn-icon-left ui-btn-right ui-corner-all");
@@ -79,6 +82,15 @@ $(document).ready(
 				document.getElementById("nm-back").innerHTML = "";
 				document.getElementById("nm-link").setAttribute("class", "ui-btn ui-btn-inline ui-shadow ui-corner-all ui-icon-info ui-btn-icon-notext ui-btn-right");
 				document.getElementById("nm-link").innerHTML = "";
+			}
+			if(agent.match(/(iPhone)|(iPad)|(iPod)/i)) {
+				$("#mappage, #n_contentpage").removeClass('ui-page-theme-b').addClass('ui-page-theme-c');
+				$("#title").removeClass('ui-bar-b').addClass('ui-bar-c');
+				//$(".leaflet-popup-content-wrapper, .leaflet-popup-tip").css({"background-color": "#FFF"});
+				document.getElementById("menubutton").setAttribute("class", "ui-btn ui-btn-inline ui-btn-left ui-corner-all");
+				document.getElementById("pos").setAttribute("class", "ui-btn ui-btn-inline ui-btn-right ui-corner-all");
+				document.getElementById("nm-back").setAttribute("class", "ui-btn ui-btn-inline ui-btn-left ui-corner-all");
+				document.getElementById("nm-link").setAttribute("class", "ui-btn ui-btn-inline ui-btn-right ui-corner-all");
 			}
 			// Make the non-Android-page default
 			document.getElementById("n_contentpage").id = 'contentpage';
@@ -258,7 +270,7 @@ function showContent(name, image, content, href, layer) {
 		$( "#contentpanel" ).panel({
 			beforeclose: function( event, ui ) {layer.closePopup().unbindPopup();}
 		});
-		$( "#contentpanel" ).trigger( "pagecreate" );
+		$( "#contentpanel" ).trigger( "updatelayout" );
 		$( "#contentpanel" ).panel( "open" );
 	}
 	else {
