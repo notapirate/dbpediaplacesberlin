@@ -85,7 +85,7 @@ $(document).ready(
 			}
 			if(agent.match(/(iPhone)|(iPad)|(iPod)/i)) {
 				$("#mappage, #n_contentpage").removeClass('ui-page-theme-b').addClass('ui-page-theme-c');
-				$("#title").removeClass('ui-bar-b').addClass('ui-bar-c');
+				$("#title, #nm-title").removeClass('ui-bar-b').addClass('ui-bar-c');
 				//$(".leaflet-popup-content-wrapper, .leaflet-popup-tip").css({"background-color": "#FFF"});
 				document.getElementById("menubutton").setAttribute("class", "ui-btn ui-btn-inline ui-btn-left ui-corner-all");
 				document.getElementById("pos").setAttribute("class", "ui-btn ui-btn-inline ui-btn-right ui-corner-all");
@@ -103,13 +103,16 @@ $(document).ready(
 	map = new L.Map('map');
 
 	// create the tile layer with correct attribution
+	var bounds_text = "berlin";
+	var bounds_berlin = L.latLngBounds([52.33, 13.77], [52.69, 13.08]);
 	var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 	var osmAttrib='Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 	var osm = new L.TileLayer(osmUrl, {
-		attribution: osmAttrib
+		minZoom: 12,
+		attribution: osmAttrib,
+		bounds: bounds_berlin,
+		reuseTiles: true
 	});
-	var bounds_text = "berlin";
-	var bounds_berlin = L.latLngBounds([52.33, 13.77], [52.69, 13.08]);
 
 	var user = L.icon({
 	    iconUrl: 'js/images/User-32.png',
@@ -121,7 +124,6 @@ $(document).ready(
 	// start the map in Berlin
 	// setView must be called in case the user ignores the location request or chooses "Not now" (Firefox), which fires no callback
 	map.setView(bounds_berlin.getCenter(),18);
-	map.setMaxBounds(bounds_berlin);
 	map.addLayer(osm);
 	posmarker = L.marker([1,1], {icon: user}).bindPopup(yourpos).addTo(map);
 	
@@ -261,7 +263,7 @@ function getData(feature, layer) {
 function showContent(name, image, content, href, layer) {
 	if(widescreen.matches) {
 		// Wide screen: Open Panel
-			layer.bindPopup(name, {autoPan: false}).openPopup();
+		layer.bindPopup(name, {autoPan: false}).openPopup();
 		document.getElementById("w-name").innerHTML = name;
 		
 		document.getElementById("w-image").src = image;
