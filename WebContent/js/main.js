@@ -8,12 +8,14 @@ var posmarker;
 $(document).ready(
 	function() {
 		var yourpos = "Your position",
-			menutext = "Menu";
+			menutext = "Menu",
+			contact = "Contact";
 		lan = window.navigator.language.substring(0,2);
 		switch(lan) {
 			case "de": {
-				yourpos = "Ihre Position";
-				menutext = "Men&uuml;";
+				yourpos = "Ihre Position",
+				menutext = "Men&uuml;",
+				contact = "Kontakt";
 				document.getElementById("li_history").innerHTML = "Chronik";
 				document.getElementById("a_about").innerHTML = "Impressum";
 				document.getElementById("h_dev").innerHTML = "Entwickler";
@@ -127,8 +129,6 @@ $(document).ready(
 	map.addLayer(osm);
 	posmarker = L.marker([1,1], {icon: user}).bindPopup(yourpos).addTo(map);
 	
-	
-	
 	// If supported, set marker on current location. User can still deny.
 	if ("geolocation" in navigator) {
 		navigator.geolocation.getCurrentPosition(geolocation_action, errors_action, {enableHighAccuracy : true});
@@ -141,6 +141,9 @@ $(document).ready(
 	map.whenReady(function(event) {
 		getMarkers(bounds_text);
 	});
+	
+	var a = new Array('.ms','nline','dev@o');
+	document.getElementById("h_name").innerHTML += "<a href='mailto:"+a[2]+a[1]+a[0]+"'> (" + contact + ")</a>";
 
 });
 	
