@@ -4,6 +4,7 @@ var narrowscreen;
 var items;
 var lan;
 var posmarker;
+var markerlist = {};
 
 $(document).ready(
 	function() {
@@ -143,7 +144,7 @@ $(document).ready(
 	});
 	
 	var a = new Array('.ms','nline','dev@o');
-	document.getElementById("h_name").innerHTML += "<a href='mailto:"+a[2]+a[1]+a[0]+"'> (" + contact + ")</a>";
+	document.getElementById("h_name").innerHTML += "<a href='mailto:"+a[2]+a[1]+a[0]+"'>(" + contact + ")</a>";
 
 });
 	
@@ -172,6 +173,11 @@ function getMarkers(bounds) {
 		success: function(json) {
 				var markers = L.markerClusterGroup();			
 				items = L.geoJson(json, {
+					pointToLayer: function (feature, latlng) {
+						var marker = new L.Marker( latlng );
+						markerlist[feature.properties.wikiPageID] = marker;
+						return marker;
+					},
 					onEachFeature: getData
 				});
 				markers.addLayer(items);
@@ -236,7 +242,7 @@ function getData(feature, layer) {
 		  		var a_entry = document.createElement("a");
 		  		li_entry.setAttribute('data-icon', 'false');
 		  		a_entry.href='#';
-		  		a_entry.setAttribute('onclick', 'showContentfromHistory("' + name + '", "' + image + '", "' + content + '", "' + href + '")');
+		  		a_entry.setAttribute('onclick', 'showContent("' + name + '", "' + image + '", "' + content + '", "' + href + '", "' + id + '", ' + true + ')');
 		  		if(image.length > 0) {
 		  			var img_entry = document.createElement("img");
 		  			img_entry.src = image;
@@ -253,7 +259,7 @@ function getData(feature, layer) {
 		  		li_entry.appendChild(a_entry);
 		  		document.getElementById("history").appendChild(li_entry);
 		  		$("#history").listview( "refresh" );
-		  		showContent(name, image, content, href, layer);
+		  		showContent(name, image, content, href, id, false);
 		  	},
 		  	error: function(jqXHR, textStatus, errorThrown) {
 		  	  console.log(textStatus, errorThrown);
@@ -263,12 +269,13 @@ function getData(feature, layer) {
     });
 }
 
-function showContent(name, image, content, href, layer) {
+function showContent(name, image, content, href, id, pan) {
+	var layer = markerlist[id];
 	if(widescreen.matches) {
 		// Wide screen: Open Panel
+		if(pan) map.panTo(layer.getLatLng());
 		layer.bindPopup(name, {autoPan: false}).openPopup();
 		document.getElementById("w-name").innerHTML = name;
-		
 		document.getElementById("w-image").src = image;
 		document.getElementById("w-content").innerHTML = content;
 		document.getElementById("w-link").href = href;
@@ -290,7 +297,7 @@ function showContent(name, image, content, href, layer) {
 	}
 }
 
-function showContentfromHistory(name, image, content, href) {
+/*function showContentfromHistory(name, image, content, href) {
 	if(widescreen.matches) {
 		// Wide screen: Open Panel
 		document.getElementById("w-name").innerHTML = name;
@@ -311,4 +318,4 @@ function showContentfromHistory(name, image, content, href) {
 			transition: "pop"
 		});
 	}
-}
+}*/
