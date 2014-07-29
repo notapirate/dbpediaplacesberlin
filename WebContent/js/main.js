@@ -5,6 +5,7 @@ var items;
 var lan;
 var posmarker;
 var markerlist = {};
+var bounds_berlin;
 
 $(document).ready(
 	function() {
@@ -107,7 +108,7 @@ $(document).ready(
 
 	// create the tile layer with correct attribution
 	var bounds_text = "berlin";
-	var bounds_berlin = L.latLngBounds([52.33, 13.77], [52.69, 13.08]);
+	bounds_berlin = L.latLngBounds([52.33, 13.77], [52.69, 13.08]);
 	var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 	var osmAttrib='Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 	var osm = new L.TileLayer(osmUrl, {
@@ -151,9 +152,11 @@ $(document).ready(
 function geolocation_action(position){
 	// Center map on position and place a marker with popup there 
     var latlng = new L.LatLng(position.coords.latitude,position.coords.longitude);
-    map.panTo(latlng);
-    map.setZoom(18);
-    posmarker.setLatLng(latlng).update().openPopup();
+    if(bounds_berlin.contains(latlng)) {
+    	map.panTo(latlng);
+    	map.setZoom(18);
+    	posmarker.setLatLng(latlng).update().openPopup();
+    }
 }
 
 function errors_action(error) {
