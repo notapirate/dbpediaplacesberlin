@@ -7,7 +7,7 @@
     padding: 0;
 }
 
-/*.leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #000 }*/
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #000 }
 
 #map {
     height: 100%;

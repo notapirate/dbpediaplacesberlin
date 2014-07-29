@@ -51,9 +51,6 @@ $(document).ready(
 						"<link rel='stylesheet' href='css/nativedroid/jquerymobile.nativedroid.color.blue.css' id='jQMnDColor' />"+
 						"<script src='js/nativedroid.script.js'></script>"
 			);
-			// Make Leaflet tooltip background color black
-			//$(".leaflet-popup-content-wrapper, .leaflet-popup-tip").backgroundColor = '#000';
-			
 			// Prepare header elements for use with nativedroid
 			var menu_android = document.createElement("i");
 			menu_android.setAttribute("class", "lIcon fa fa-bars");
@@ -73,9 +70,6 @@ $(document).ready(
 			document.getElementById("am-link").id = 'm-link';
 		}
 		else {
-			/*else {
-				//$(".leaflet-popup-content-wrapper, .leaflet-popup-tip").css({"background-color": "#000"});
-			}*/
 			// Add or remove button texts
 			if(widescreen.matches || agent.match(/(iPhone)|(iPad)|(iPod)/i)) {
 				document.getElementById("menubutton").innerHTML = menutext;
@@ -94,7 +88,8 @@ $(document).ready(
 			if(agent.match(/(iPhone)|(iPad)|(iPod)/i)) {
 				$("#mappage, #n_contentpage, #changesite").removeClass('ui-page-theme-b').addClass('ui-page-theme-c');
 				$("#title, #nm-title").removeClass('ui-bar-b').addClass('ui-bar-c');
-				//$(".leaflet-popup-content-wrapper, .leaflet-popup-tip").css({"background-color": "#FFF"});
+				// Make Leaflet tooltip background color white
+				document.styleSheets[6].cssRules[1].style.backgroundColor='#FFF';
 				document.getElementById("menubutton").setAttribute("class", "ui-btn ui-btn-inline ui-btn-left ui-corner-all");
 				document.getElementById("pos").setAttribute("class", "ui-btn ui-btn-inline ui-btn-right ui-corner-all");
 				document.getElementById("nm-back").setAttribute("class", "ui-btn ui-btn-inline ui-btn-left ui-corner-all");
