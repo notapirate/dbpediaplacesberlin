@@ -18,6 +18,10 @@ $(document).ready(
 				yourpos = "Ihre Position",
 				menutext = "Men&uuml;",
 				contact = "Kontakt";
+				document.getElementById("changehead").innerHTML = "Auf globale Seite wechseln?";
+				document.getElementById("changetext").innerHTML = "Sie befinden sich ausserhalb von Berlin. M&ouml;chten Sie auf DBpedia Places wechseln?";
+				document.getElementById("changenow").innerHTML = "Ja, neue Seite jetzt aufrufen";
+				document.getElementById("nochange").innerHTML = "Nein, ich will noch in Berlin bleiben";
 				document.getElementById("li_history").innerHTML = "Chronik";
 				document.getElementById("a_about").innerHTML = "Impressum";
 				document.getElementById("h_dev").innerHTML = "Entwickler";
@@ -152,7 +156,7 @@ $(document).ready(
 function geolocation_action(position){
 	// Center map on position and place a marker with popup there 
     var latlng = new L.LatLng(position.coords.latitude,position.coords.longitude);
-    if(bounds_berlin.contains(latlng)) {
+    if(!bounds_berlin.contains(latlng)) {
     	map.panTo(latlng);
     	map.setZoom(18);
     	posmarker.setLatLng(latlng).update().openPopup();
