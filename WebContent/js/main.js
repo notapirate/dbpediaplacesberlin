@@ -88,7 +88,7 @@ $(document).ready(
 				document.getElementById("nm-link").innerHTML = "";
 			}
 			if(agent.match(/(iPhone)|(iPad)|(iPod)/i)) {
-				$("#mappage, #n_contentpage").removeClass('ui-page-theme-b').addClass('ui-page-theme-c');
+				$("#mappage, #n_contentpage, #changesite").removeClass('ui-page-theme-b').addClass('ui-page-theme-c');
 				$("#title, #nm-title").removeClass('ui-bar-b').addClass('ui-bar-c');
 				//$(".leaflet-popup-content-wrapper, .leaflet-popup-tip").css({"background-color": "#FFF"});
 				document.getElementById("menubutton").setAttribute("class", "ui-btn ui-btn-inline ui-btn-left ui-corner-all");
@@ -156,6 +156,11 @@ function geolocation_action(position){
     	map.panTo(latlng);
     	map.setZoom(18);
     	posmarker.setLatLng(latlng).update().openPopup();
+    }
+    else {
+    	document.getElementById('changenow').href = 'http://dbpediaplaces.tk?lat=' + latlng.lat + "&lng=" + latlng.lng;
+    	$( "#changesite" ).popup();
+    	$( "#changesite" ).popup("open");
     }
 }
 

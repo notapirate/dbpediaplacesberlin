@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
 <meta name="mobile-web-app-capable" content='yes'/>
 <link rel="icon" sizes="196x196" href="js/images/icon-196.png">
 <link rel="icon" sizes="128x128" href="js/images/icon-128.png">
@@ -57,6 +58,16 @@
 	    	</ul>
 	    	<a href="#map" data-rel="back" class='ui-btn ui-shadow ui-icon-check ui-btn-icon-left'>OK</a>
 		</div>
+		
+		<div data-role="popup" id='changesite'>
+			<h1>Change to global site?</h1>
+			<p>You are outside of Berlin. Do you wish to change to DBpedia Places?</p>
+			<div data-role='controlgroup' data-type='vertical'>
+				<a href="" id='changenow' data-rel="close" class='ui-btn ui-shadow ui-icon-action ui-btn-icon-left'>Sure, take me to it</a>
+				<a href="#mappage" id='nochange' data-rel="back" class='ui-btn ui-shadow ui-icon-back ui-btn-icon-left'>No, I'd like to explore Berlin a little longer</a>
+			</div>
+		</div>
+		
     </div>
 
 	<!-- Overlay panel would look better, but it doesnt allow interaction with map while open -->
@@ -123,6 +134,7 @@
 		</div>
 	</div> 
 </div>
+	
 <script src='js/main.js' type='application/x-javascript'></script>
 </body>
 </html>
