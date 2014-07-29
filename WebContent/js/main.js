@@ -156,7 +156,7 @@ $(document).ready(
 function geolocation_action(position){
 	// Center map on position and place a marker with popup there 
     var latlng = new L.LatLng(position.coords.latitude,position.coords.longitude);
-    if(!bounds_berlin.contains(latlng)) {
+    if(bounds_berlin.contains(latlng)) {
     	map.panTo(latlng);
     	map.setZoom(18);
     	posmarker.setLatLng(latlng).update().openPopup();
