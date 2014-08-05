@@ -25,7 +25,13 @@
 <link rel="stylesheet" href="css/leaflet/MarkerCluster.css" />
 <link rel="stylesheet" href="css/leaflet/MarkerCluster.Default.css" />
 <script src="js/leaflet.markercluster-src.js"></script>
-	
+
+<link rel="stylesheet" href="css/leaflet/L.Control.Locate.css" />
+<!--[if lt IE 9]>
+    <link rel="stylesheet" href="css/leaflet/L.Control.Locate.ie.css"/>
+<![endif]-->
+<script src="js/L.Control.Locate.js" ></script>
+
 <link rel='stylesheet' type='text/css' href='css/main.css'/>
 
 </head>
@@ -37,6 +43,7 @@
 	    
 	    	<ul data-role="listview" class='inset'>
 		    	<li data-icon='location'><a href='#' onclick='$("#menu").panel("close"); navigator.geolocation.getCurrentPosition(geolocation_action, errors_action, {enableHighAccuracy : true});'>Position</a></li>
+		    	<li data-icon='search'><a href='#places' id='searchbutton' data-rel="popup" data-position-to="window" data-transition="pop">Search</a></li>
 	    	</ul>
         	<ul data-role="listview" id='history' class='inset'>
             	<li id='li_history'>History</li>
@@ -84,10 +91,20 @@
 	<div data-role='header' id='title' data-position='fixed' data-theme='b' data-tap-toggle='false' style='overflow:hidden;'>
 		<a href='#menu' data-rel='popup' id='menubutton'></a>
 		<h1>DBpedia Places Berlin</h1>
-		<a href='#' id='pos'></a>
+		<a href='#places' id='search' data-rel="popup" data-position-to="#title" data-transition="pop"></a>
 	</div>
 	
 	<div data-role='main' class='ui-content' id='map'>
+		<div data-role="popup" id="places" data-transition='slidedown'>
+			<ul data-role="listview" class='ui-listview-inset'>
+				<li><div data-role="fieldcontain" class="ui-hide-label">
+				<label for='filterable-input'>Search</label>
+				<input type="text" data-type="search" id="filterable-input" value='' placeholder="Search">
+				</div></li>
+			</ul>
+			<ul id='placeslist' data-role="listview" data-filter="true" data-input="#filterable-input" class='ui-listview-inset'>
+			</ul>
+		</div>
 		<div data-role="popup" id="error">
 			<p id='error'>An error occured.<p>
 		</div>

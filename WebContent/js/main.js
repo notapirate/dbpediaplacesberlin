@@ -6,18 +6,23 @@ var lan;
 var posmarker;
 var markerlist = {};
 var bounds_berlin;
+var markers;
 
-$(document).ready(
-	function() {
+//$(document).ready(
+	function initmap() {
 		var yourpos = "Your position",
+			posmark = "Mark position",
+			search = "Search",
 			menutext = "Menu",
 			contact = "Contact";
-		lan = window.navigator.language.substring(0,2);
+			lan = window.navigator.language.substring(0,2);
 		switch(lan) {
 			case "de": {
 				yourpos = "Ihre Position",
 				menutext = "Men&uuml;",
-				contact = "Kontakt";
+				search = "Suche",
+				contact = "Kontakt",
+				posmark = "Position markieren";
 				document.getElementById("changehead").innerHTML = "Auf globale Seite wechseln?";
 				document.getElementById("changetext").innerHTML = "Sie befinden sich ausserhalb von Berlin. M&ouml;chten Sie auf DBpedia Places wechseln?";
 				document.getElementById("changenow").innerHTML = "Ja, neue Seite jetzt aufrufen";
@@ -29,6 +34,8 @@ $(document).ready(
 				document.getElementById("w-back").innerHTML = "Schliessen";
 				document.getElementById("nm-back").innerHTML = "Zur&uuml;ck";
 				document.getElementById("am-back").innerHTML = "<i class='lIcon fa fa-undo'></i>Zur&uuml;ck";
+				document.getElementById("filterable-input").setAttribute('placeholder', search);
+				document.getElementById("searchbutton").innerHTML = search;
 				break;
 			}
 		}
@@ -55,12 +62,12 @@ $(document).ready(
 			var menu_android = document.createElement("i");
 			menu_android.setAttribute("class", "lIcon fa fa-bars");
 			document.getElementById("menubutton").appendChild(menu_android);
-			if(widescreen.matches) {
-				var pos_android = document.createElement("i");
-				pos_android.setAttribute("class", "lIcon fa fa-map-marker");
-				document.getElementById("pos").appendChild(pos_android);
-			}
-			else document.getElementById('title').removeChild(document.getElementById('pos'));
+			var pos_android = document.createElement("i");
+			pos_android.setAttribute("class", "lIcon fa fa-search");
+			document.getElementById("search").appendChild(pos_android);
+			/*if(widescreen.matches) {
+				document.getElementById("search").innerHTML += search;
+			}*/
 			
 			// Make the Android-page default
 			document.getElementById("a_contentpage").id = 'contentpage';
@@ -74,12 +81,12 @@ $(document).ready(
 			if(widescreen.matches || agent.match(/(iPhone)|(iPad)|(iPod)/i)) {
 				document.getElementById("menubutton").innerHTML = menutext;
 				document.getElementById("menubutton").setAttribute("class", "ui-btn ui-btn-inline ui-icon-bars ui-btn-icon-left ui-btn-left ui-corner-all");
-				document.getElementById("pos").innerHTML = "Position";
-				document.getElementById("pos").setAttribute("class", "ui-btn ui-btn-inline ui-icon-location ui-btn-icon-left ui-btn-right ui-corner-all");
+				document.getElementById("search").innerHTML = search;
+				document.getElementById("search").setAttribute("class", "ui-btn ui-btn-inline ui-icon-search ui-btn-icon-left ui-btn-right ui-corner-all");
 			}
 			else {
 				document.getElementById("menubutton").setAttribute("class", "ui-btn ui-btn-inline ui-icon-bars ui-btn-icon-notext ui-btn-left ui-corner-all");
-				document.getElementById("pos").setAttribute("class", "ui-btn ui-btn-inline ui-icon-location ui-btn-icon-notext ui-btn-right ui-corner-all");
+				document.getElementById("search").setAttribute("class", "ui-btn ui-btn-inline ui-icon-search ui-btn-icon-notext ui-btn-right ui-corner-all");
 				document.getElementById("nm-back").setAttribute("class", "ui-btn ui-btn-inline ui-shadow ui-corner-all ui-icon-back ui-btn-icon-notext");
 				document.getElementById("nm-back").innerHTML = "";
 				document.getElementById("nm-link").setAttribute("class", "ui-btn ui-btn-inline ui-shadow ui-corner-all ui-icon-info ui-btn-icon-notext ui-btn-right");
@@ -89,9 +96,9 @@ $(document).ready(
 				$("#mappage, #n_contentpage, #changesite").removeClass('ui-page-theme-b').addClass('ui-page-theme-c');
 				$("#title, #nm-title").removeClass('ui-bar-b').addClass('ui-bar-c');
 				// Make Leaflet tooltip background color white
-				document.styleSheets[6].cssRules[1].style.backgroundColor='#FFF';
+				document.styleSheets[7].cssRules[1].style.backgroundColor='#FFF';
 				document.getElementById("menubutton").setAttribute("class", "ui-btn ui-btn-inline ui-btn-left ui-corner-all");
-				document.getElementById("pos").setAttribute("class", "ui-btn ui-btn-inline ui-btn-right ui-corner-all");
+				document.getElementById("search").setAttribute("class", "ui-btn ui-btn-inline ui-btn-right ui-corner-all");
 				document.getElementById("nm-back").setAttribute("class", "ui-btn ui-btn-inline ui-btn-left ui-corner-all");
 				document.getElementById("nm-link").setAttribute("class", "ui-btn ui-btn-inline ui-btn-right ui-corner-all");
 			}
@@ -129,15 +136,38 @@ $(document).ready(
 	map.setView(bounds_berlin.getCenter(),18);
 	map.addLayer(osm);
 	posmarker = L.marker([1,1], {icon: user}).bindPopup(yourpos).addTo(map);
+	L.control.locate({
+	    //position: 'topleft',  // set the location of the control
+	    drawCircle: false,  // controls whether a circle is drawn that shows the uncertainty about the location
+	    follow: false,  // follow the user's location
+	    setView: true, // automatically sets the map view to the user's location, enabled if `follow` is true
+	    keepCurrentZoomLevel: false, // keep the current map zoom level when displaying the user's location. (if `false`, use maxZoom)
+	    stopFollowingOnDrag: false, // stop following when the map is dragged if `follow` is true (deprecated, see below)
+	    remainActive: false, // if true locate control remains active on click even if the user's location is in view.
+	    markerClass: L.marker, // L.circleMarker or L.marker
+	    markerStyle: {icon: user},
+	    followCircleStyle: {},  // set difference for the style of the circle around the user's location while following
+	    followMarkerStyle: {},
+	    icon: 'icon-location',  // `icon-location` or `icon-direction`
+	    //iconLoading: 'icon-spinner  animate-spin',  // class for loading icon
+	    //circlePadding: [0, 0], // padding around accuracy circle, value is passed to setBounds
+	    metric: true,  // use metric or imperial units
+	    onLocationError: function(err) {alert(err.message)},  // define an error callback function
+	    onLocationOutsideMapBounds:  function(context) { // called when outside map boundaries
+	            alert(context.options.strings.outsideMapBoundsMsg);
+	    },
+	    strings: {
+	        title: posmark,  // title of the locate control
+	        popup: yourpos,  // text to appear if user clicks on circle
+	        outsideMapBoundsMsg: "You seem located outside the boundaries of the map" // default message for onLocationOutsideMapBounds
+	    },
+	    locateOptions: {enableHighAccuracy: true}  // define location options e.g enableHighAccuracy: true or maxZoom: 10
+	}).addTo(map);
 	
 	// If supported, set marker on current location. User can still deny.
 	if ("geolocation" in navigator) {
 		navigator.geolocation.getCurrentPosition(geolocation_action, errors_action, {enableHighAccuracy : true});
 	}
-	
-	$('#pos').click(function() {
-		navigator.geolocation.getCurrentPosition(geolocation_action, errors_action, {enableHighAccuracy : true});
-	});
 	
 	map.whenReady(function(event) {
 		getMarkers(bounds_text);
@@ -146,6 +176,14 @@ $(document).ready(
 	var a = new Array('.ms','nline','dev@o');
 	document.getElementById("h_name").innerHTML += "<a href='mailto:"+a[2]+a[1]+a[0]+"'>(" + contact + ")</a>";
 
+}//);
+initmap();
+
+$('#places, #about').on({
+	  popupbeforeposition: function() {
+	    var maxHeight = $(window).height() - 30;
+	    $('#places, #about').css('max-height', maxHeight + 'px');
+	  }
 });
 	
 function geolocation_action(position){
@@ -172,13 +210,38 @@ function errors_action(error) {
     }
 }
 
+/**
+ * Create entry for an overview list of all markers
+ * @param name
+ * @param id
+ */
+function createOverviewEntry(name, id, lat, long) {
+	
+	var li = document.createElement("li");
+	var a = document.createElement("a");
+	a.href="#";
+	a.innerHTML=name;
+	a.onclick = function (e) {
+		e.preventDefault(); 
+		$("#places").popup("close"); 
+		map.setView([lat,long],18);
+		var marker = markerlist[id];
+		if(markers.hasLayer(marker)) markers.zoomToShowLayer(marker, function(e) {marker.fire('click')});
+		else marker.fireEvent("click");
+	};
+	li.appendChild(a);
+	document.getElementById("placeslist").appendChild(li);
+}
+
 function getMarkers(bounds) {
 	$.ajax({
 		type: "GET",
 		url: "data/" + bounds + ".json",
 		dataType: "json",
+		beforeSend: function( jqXHR, settings ) {$.mobile.loading( 'show' );},
+		complete: function( jqXHR, settings ) {$.mobile.loading( 'hide' );},
 		success: function(json) {
-				var markers = L.markerClusterGroup();			
+				markers = L.markerClusterGroup();			
 				items = L.geoJson(json, {
 					pointToLayer: function (feature, latlng) {
 						var marker = new L.Marker( latlng );
@@ -189,22 +252,35 @@ function getMarkers(bounds) {
 				});
 				markers.addLayer(items);
 				map.addLayer(markers);
+				$( "#placeslist" ).filterable( "refresh" );
+				$('#places').css('overflow-y', 'scroll');
 		}
 	});
 }
 
 function getData(feature, layer) {
+	var id=feature.properties.wikiPageID,
+		image="",
+		name="",
+		content="",
+		namefound = false,
+		select = "SELECT * ",
+		where = "WHERE{?res dbpedia-owl:wikiPageID " + id + " ; dbpedia-owl:abstract ?content ; owl:sameAs ?redirect OPTIONAL {?res dbpedia-owl:thumbnail ?image BIND(?image as ?image)} ",
+		filter = "FILTER(lang(?content) = \"en\" || lang(?content) = \"" + lan + "\")",
+		queryUrl = encodeURIComponent(select + where + filter + "}"),
+		fullUrl = "http://dbpedia.org/sparql?query=" + queryUrl + "&format=application%2Fjson";
+	for(var i in feature.properties.label) {
+		switch (feature.properties.label[i].lang) {
+			case lan: name = feature.properties.label[i].value; namefound = true; break;
+			case "en": name = feature.properties.label[i].value; break;
+			default: if(!name.match(/\S+.*/)) name = feature.properties.label[0].value; break;
+		}
+		if(namefound) break;
+	}
+	createOverviewEntry(name, id, feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
+	layer.bindPopup(name);
+	layer.on("mouseover", function(e) {layer.openPopup();});
     layer.on('click', function(e){
-    	var id=feature.properties.wikiPageID,
-			image="",
-			name="",
-			content="",
-			select = "SELECT * ",
-			where = "WHERE{?res dbpedia-owl:wikiPageID " + id + " ; rdfs:label ?name ; dbpedia-owl:abstract ?content ; owl:sameAs ?redirect OPTIONAL {?res dbpedia-owl:thumbnail ?image BIND(?image as ?image)} ",
-			filter = "FILTER(lang(?name) = \"" + lan + "\" || lang(?name) = \"en\") FILTER(lang(?content) = \"en\" || lang(?content) = \"" + lan + "\")";
-    	//console.log(select + where + filter + "}");
-		var queryUrl = encodeURIComponent(select + where + filter + "}");
-		var fullUrl = "http://dbpedia.org/sparql?query=" + queryUrl + "&format=application%2Fjson";
 		$.ajax({
 	  		dataType: "jsonp",
 	  		timeout : 5000,
@@ -214,20 +290,20 @@ function getData(feature, layer) {
 			complete: function( jqXHR, settings ) {$.mobile.loading( 'hide' );},
 	  		success: function(data) {
 	  			var href = "http://en.wikipedia.org/?curid=" + id;
-	  			var allfound = false, namefound = false, contentfound = false;
+	  			var allfound = false, contentfound = false;
 	  			var results = data.results.bindings;
 		  		for(var r in results) {
 		  			var vars = results[r];
 		  			for(var i in vars) {
 		  				switch(i) {
 		  					case "image": image = results[r].image.value; break;
-		  					case "name": 
+		  					/*case "name": 
 		  						if(results[r].name["xml:lang"].indexOf(lan) > -1) {
 		  							name = results[r].name.value;
 		  							namefound = true;
 		  						}
 		  						else if(results[r].name["xml:lang"].indexOf("en") > -1 && !namefound) name = results[r].name.value;
-		  						break;
+		  						break;*/
 		  					case "content": 
 		  						if(results[r].content["xml:lang"].indexOf(lan) > -1) {
 		  							content = results[r].content.value;
@@ -240,7 +316,7 @@ function getData(feature, layer) {
 		  					break;
 		  				}
 		  			}
-		  			if(namefound && contentfound && href.indexOf("wikipedia.org/wiki") >0) {
+		  			if(contentfound && href.indexOf("wikipedia.org/wiki") >0) {
 		  				break;
 		  			}
 		  		}
@@ -287,7 +363,7 @@ function showContent(name, image, content, href, id, pan) {
 		document.getElementById("w-content").innerHTML = content;
 		document.getElementById("w-link").href = href;
 		$( "#contentpanel" ).panel({
-			beforeclose: function( event, ui ) {layer.closePopup().unbindPopup();}
+			beforeclose: function( event, ui ) {layer.closePopup();}
 		});
 		$( "#contentpanel" ).trigger( "updatelayout" );
 		$( "#contentpanel" ).panel( "open" );
