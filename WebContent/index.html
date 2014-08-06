@@ -42,7 +42,7 @@
 	    <div class="content-primary" id='lists'>
 	    
 	    	<ul data-role="listview" class='inset'>
-		    	<li data-icon='location'><a href='#' onclick='$("#menu").panel("close"); navigator.geolocation.getCurrentPosition(geolocation_action, errors_action, {enableHighAccuracy : true});'>Position</a></li>
+		    	<li data-icon='location'><a href='#' onclick='$("#menu").panel("close"); map.locate({enableHighAccuracy : true});'>Position</a></li>
 		    	<li data-icon='search'><a href='#places' id='searchbutton' data-rel="popup" data-position-to="window" data-transition="pop">Search</a></li>
 	    	</ul>
         	<ul data-role="listview" id='history' class='inset'>

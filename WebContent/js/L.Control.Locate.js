@@ -179,8 +179,6 @@ L.Control.Locate = L.Control.extend({
             if (self._locateOnNextLocationFound) {
                 if (isOutsideMapBounds()) {
                     self.options.onLocationOutsideMapBounds(self);
-                } else if(!self.options.drawCircle || self.options.keepCurrentZoomLevel) {
-                	map.setView(self._event.latlng);
                 } else {
                     map.fitBounds(self._event.bounds, {
                         padding: self.options.circlePadding,

@@ -8,13 +8,14 @@ var markerlist = {};
 var bounds_berlin;
 var markers;
 
-//$(document).ready(
-	function initmap() {
+$(document).ready(
+	function() {
 		var yourpos = "Your position",
 			posmark = "Mark position",
 			search = "Search",
 			menutext = "Menu",
-			contact = "Contact";
+			contact = "Contact",
+			lat,lng;
 			lan = window.navigator.language.substring(0,2);
 		switch(lan) {
 			case "de": {
@@ -131,16 +132,19 @@ var markers;
 	    popupAnchor:  [1, -31]
 	});
 	
+	var args = getUrlVars();
+	lat = bounds_berlin.getCenter().lat;
+	lng = bounds_berlin.getCenter().lng;
+	
 	// start the map in Berlin
 	// setView must be called in case the user ignores the location request or chooses "Not now" (Firefox), which fires no callback
-	map.setView(bounds_berlin.getCenter(),18);
+	map.setView([lat,lng],18);
 	map.addLayer(osm);
-	posmarker = L.marker([1,1], {icon: user}).bindPopup(yourpos).addTo(map);
-	L.control.locate({
+	var lc = L.control.locate({
 	    //position: 'topleft',  // set the location of the control
 	    drawCircle: false,  // controls whether a circle is drawn that shows the uncertainty about the location
 	    follow: false,  // follow the user's location
-	    setView: true, // automatically sets the map view to the user's location, enabled if `follow` is true
+	    setView: false, // automatically sets the map view to the user's location, enabled if `follow` is true
 	    keepCurrentZoomLevel: false, // keep the current map zoom level when displaying the user's location. (if `false`, use maxZoom)
 	    stopFollowingOnDrag: false, // stop following when the map is dragged if `follow` is true (deprecated, see below)
 	    remainActive: false, // if true locate control remains active on click even if the user's location is in view.
@@ -154,7 +158,7 @@ var markers;
 	    metric: true,  // use metric or imperial units
 	    onLocationError: function(err) {alert(err.message)},  // define an error callback function
 	    onLocationOutsideMapBounds:  function(context) { // called when outside map boundaries
-	            alert(context.options.strings.outsideMapBoundsMsg);
+	            //alert(context.options.strings.outsideMapBoundsMsg);
 	    },
 	    strings: {
 	        title: posmark,  // title of the locate control
@@ -164,10 +168,26 @@ var markers;
 	    locateOptions: {enableHighAccuracy: true}  // define location options e.g enableHighAccuracy: true or maxZoom: 10
 	}).addTo(map);
 	
-	// If supported, set marker on current location. User can still deny.
-	if ("geolocation" in navigator) {
-		navigator.geolocation.getCurrentPosition(geolocation_action, errors_action, {enableHighAccuracy : true});
+	if(args.length > 1) {
+		
+		// Coordinates given from DBpedia Places
+		lat = args["lat"];
+		lng = args["lng"];
+		console.log(lat + ' ' + lng);
+		posmarker = L.marker([lat,lng], {icon: user}).bindPopup(yourpos).addTo(map);
+		posmarker.openPopup();
 	}
+	else {
+		// If supported, set marker on current location. User can still deny.
+		if ("geolocation" in navigator) {
+			//navigator.geolocation.getCurrentPosition(geolocation_action, errors_action, {enableHighAccuracy : true});
+			map.on('locationfound', onLocationFound);
+			map.locate({enableHighAccuracy: true});
+		}
+		posmarker = L.marker([1,1], {icon: user}).bindPopup(yourpos).addTo(map);
+	}
+	
+	
 	
 	map.whenReady(function(event) {
 		getMarkers(bounds_text);
@@ -176,8 +196,7 @@ var markers;
 	var a = new Array('.ms','nline','dev@o');
 	document.getElementById("h_name").innerHTML += "<a href='mailto:"+a[2]+a[1]+a[0]+"'>(" + contact + ")</a>";
 
-}//);
-initmap();
+});
 
 $('#places, #about').on({
 	  popupbeforeposition: function() {
@@ -185,17 +204,31 @@ $('#places, #about').on({
 	    $('#places, #about').css('max-height', maxHeight + 'px');
 	  }
 });
-	
-function geolocation_action(position){
-	// Center map on position and place a marker with popup there 
-    var latlng = new L.LatLng(position.coords.latitude,position.coords.longitude);
-    if(bounds_berlin.contains(latlng)) {
-    	map.panTo(latlng);
+
+/**
+ * Read a page's GET URL variables and return them as an associative array.
+ */
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+
+function onLocationFound(e) {
+	if(bounds_berlin.contains(e.latlng)) {
+    	map.panTo(e.latlng);
     	map.setZoom(18);
-    	posmarker.setLatLng(latlng).update().openPopup();
+    	posmarker.setLatLng(e.latlng).update().openPopup();
     }
     else {
-    	document.getElementById('changenow').href = 'http://dbpediaplaces.tk?lat=' + latlng.lat + "&lng=" + latlng.lng;
+    	document.getElementById('changenow').href = 'http://dbpediaplaces.tk?lat=' + e.latlng.lat + "&lng=" + e.latlng.lng;
     	$( "#changesite" ).popup();
     	$( "#changesite" ).popup("open");
     }
